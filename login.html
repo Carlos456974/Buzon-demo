@@ -32,13 +32,14 @@
       const pass = form.password.value;
 
       const validUser = "admin";
-      const hashedPassword = "0b3d9fc4010e599d339b3ddc2149a7c3f68a0a7e2481080d8322d9a4df3d8c9e"; // SHA-256 de admin123
+      const validPassHash = "6c3b6a6cf9d8d6c013f9ea2a7d3193c8fcd0b0a08eb17a038c62e38fddc4f5b0"; // SHA-256 de admin123
 
-      const hashBuffer = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(pass));
+      const buffer = new TextEncoder().encode(pass);
+      const hashBuffer = await crypto.subtle.digest("SHA-256", buffer);
       const hashArray = Array.from(new Uint8Array(hashBuffer));
-      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      const hashHex = hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
 
-      if (user === validUser && hashHex === hashedPassword) {
+      if (user === validUser && hashHex === validPassHash) {
         localStorage.setItem("adminLogueado", "true");
         window.location.href = "admin.html";
       } else {
@@ -48,5 +49,4 @@
   </script>
 </body>
 </html>
-
 
