@@ -2,51 +2,135 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Buzón de Denuncias</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Buzón de Denuncias Electrónico</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 2rem auto;
+      background: #f9f9f9;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    label {
+      display: block;
+      margin: 0.8rem 0 0.3rem;
+      font-weight: bold;
+    }
+    textarea, input[type="text"], input[type="email"] {
+      width: 100%;
+      padding: 0.6rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      resize: vertical;
+    }
+    button {
+      margin-top: 1.2rem;
+      padding: 0.8rem;
+      font-size: 1.1rem;
+      background-color: #0077cc;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+    }
+    .privacy {
+      font-size: 0.85rem;
+      color: #555;
+      margin-top: 1rem;
+      border-top: 1px solid #ddd;
+      padding-top: 1rem;
+    }
+    .privacy a {
+      color: #0077cc;
+      text-decoration: none;
+    }
+    #confirmation {
+      margin-top: 1rem;
+      font-weight: bold;
+      color: green;
+      display: none;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Buzón de Denuncias</h1>
-    <p>Este formulario permite reportar conductas de forma anónima o identificada.</p>
+  <h1>Buzón de Denuncias</h1>
 
-    <form id="denunciaForm">
-      <label>¿Deseas hacer la denuncia de forma anónima?</label>
-      <select name="anonimo" required>
-        <option value="si">Sí</option>
-        <option value="no">No</option>
-      </select>
+  <form id="denunciaForm">
+    <label for="descripcion">Descripción de la denuncia*</label>
+    <textarea id="descripcion" name="descripcion" rows="5" required placeholder="Describe tu denuncia aquí..."></textarea>
 
-      <div id="datosPersona">
-        <label>Nombre completo</label>
-        <input type="text" name="nombre" />
+    <label for="correo">Correo electrónico (opcional)</label>
+    <input type="email" id="correo" name="correo" placeholder="Tu correo para seguimiento (opcional)" />
 
-        <label>Correo electrónico</label>
-        <input type="email" name="correo" />
-      </div>
+    <label>
+      <input type="checkbox" id="anonima" name="anonima" /> Marcar denuncia como anónima
+    </label>
 
-      <label>¿Qué ocurrió?</label>
-      <textarea name="descripcion" required></textarea>
+    <button type="submit">Enviar denuncia</button>
+  </form>
 
-      <label>¿Cuándo ocurrió? (opcional)</label>
-      <input type="date" name="fechaIncidente" />
+  <p id="confirmation"></p>
 
-      <label>¿Quién estuvo implicado? (opcional)</label>
-      <input type="text" name="personaImplicada" />
-
-      <button type="submit">Enviar denuncia</button>
-    </form>
-
-    <p id="mensaje" style="display: none;"></p>
+  <div class="privacy">
+    <p>
+      <strong>Aviso de privacidad:</strong> Tu denuncia será tratada con estricta confidencialidad y puede ser presentada de forma anónima. Los datos proporcionados serán usados exclusivamente para fines de investigación interna conforme a la normatividad vigente y a los principios de integridad organizacional establecidos por CEMEFI. Para más información consulta nuestra <a href="#">Política de Privacidad</a>.
+    </p>
   </div>
 
-  <div style="text-align: center; margin-top: 30px;">
-    <a href="login.html" style="font-size: 12px; color: #888; text-decoration: none;">
-      Acceso administrador
-    </a>
-  </div>
+  <script>
+    const form = document.getElementById("denunciaForm");
+    const confirmation = document.getElementById("confirmation");
 
-  <script src="script.js"></script>
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const descripcion = form.descripcion.value.trim();
+      const correo = form.correo.value.trim();
+      const anonima = form.anonima.checked;
+
+      if (!descripcion) {
+        alert("Por favor escribe una descripción para la denuncia.");
+        return;
+      }
+
+      // Generar folio único
+      const folio = Date.now() + Math.floor(Math.random() * 1000);
+
+      // Fecha automática
+      const fecha = new Date().toLocaleString();
+
+      // Crear objeto denuncia
+      const denuncia = {
+        folio,
+        descripcion,
+        correo: anonima ? null : correo || null,
+        anonima,
+        fecha,
+        status: "Pendiente",
+      };
+
+      console.log("Denuncia recibida:", denuncia);
+
+      // Guardar denuncia en localStorage (demo)
+      let denuncias = JSON.parse(localStorage.getItem("denuncias") || "[]");
+      denuncias.push(denuncia);
+      localStorage.setItem("denuncias", JSON.stringify(denuncias));
+
+      // Confirmación al usuario
+      confirmation.style.display = "block";
+      confirmation.textContent = `Denuncia enviada con éxito. Tu folio es: ${folio}`;
+
+      form.reset();
+    });
+  </script>
 </body>
 </html>
