@@ -14,7 +14,11 @@
       <input type="text" name="usuario" required>
 
       <label>Contraseña</label>
-      <input type="password" name="password" required>
+      <input type="password" name="password" id="passwordInput" required>
+
+      <label style="font-size: 14px; display: flex; align-items: center; gap: 5px; margin-top: 5px;">
+        <input type="checkbox" id="showPassword"> Mostrar contraseña
+      </label>
 
       <button type="submit">Ingresar</button>
     </form>
@@ -24,6 +28,13 @@
   <script>
     const form = document.getElementById("loginForm");
     const errorMsg = document.getElementById("error");
+    const passwordInput = document.getElementById("passwordInput");
+    const showPasswordCheckbox = document.getElementById("showPassword");
+
+    // Mostrar u ocultar contraseña
+    showPasswordCheckbox.addEventListener("change", () => {
+      passwordInput.type = showPasswordCheckbox.checked ? "text" : "password";
+    });
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -32,7 +43,7 @@
       const pass = form.password.value;
 
       const validUser = "admin";
-      const validPassHash = "6c3b6a6cf9d8d6c013f9ea2a7d3193c8fcd0b0a08eb17a038c62e38fddc4f5b0"; // SHA-256 de admin123
+      const validPassHash = "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9"; // SHA-256 de "admin123"
 
       const buffer = new TextEncoder().encode(pass);
       const hashBuffer = await crypto.subtle.digest("SHA-256", buffer);
@@ -49,4 +60,5 @@
   </script>
 </body>
 </html>
+
 
