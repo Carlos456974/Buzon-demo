@@ -32,7 +32,7 @@
       const pass = form.password.value;
 
       const validUser = "admin";
-      const hashedPassword = "0b3d9fc4010e599d339b3ddc2149a7c3f68a0a7e2481080d8322d9a4df3d8c9e"; // hash SHA-256 de "admin123"
+      const hashedPassword = "0b3d9fc4010e599d339b3ddc2149a7c3f68a0a7e2481080d8322d9a4df3d8c9e"; // SHA-256 de admin123
 
       const hashBuffer = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(pass));
       const hashArray = Array.from(new Uint8Array(hashBuffer));
@@ -48,4 +48,5 @@
   </script>
 </body>
 </html>
+
 
