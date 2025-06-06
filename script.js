@@ -1,45 +1,41 @@
-document.getElementById("anonimo").addEventListener("change", function () {
-  const mostrar = this.value === "no";
-  document.getElementById("datosPersonales").style.display = mostrar ? "block" : "none";
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("denunciaForm");
+  const mensaje = document.getElementById("mensaje");
+  const datosPersona = document.getElementById("datosPersona");
+
+  form.anonimo.addEventListener("change", () => {
+    datosPersona.style.display = form.anonimo.value === "no" ? "block" : "none";
+  });
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const data = {
+      anonimo: form.anonimo.value,
+      nombre: form.anonimo.value === "no" ? form.nombre.value : null,
+      correo: form.anonimo.value === "no" ? form.correo.value : null,
+      descripcion: form.descripcion.value,
+      fechaIncidente: form.fechaIncidente.value,
+      personaImplicada: form.personaImplicada.value,
+      fechaEnvio: new Date().toISOString(),
+      estatus: "Recibida",
+      folio: "D" + Date.now(),
+      historial: [
+        {
+          estatus: "Recibida",
+          fecha: new Date().toISOString(),
+          nota: "Denuncia recibida en el sistema"
+        }
+      ]
+    };
+
+    const existentes = JSON.parse(localStorage.getItem("denuncias") || "[]");
+    existentes.push(data);
+    localStorage.setItem("denuncias", JSON.stringify(existentes));
+
+    mensaje.textContent = `Gracias. Su denuncia ha sido registrada con el folio ${data.folio}.`;
+    mensaje.style.display = "block";
+    form.reset();
+    datosPersona.style.display = "none";
+  });
 });
-
-document.getElementById("formDenuncia").addEventListener("submit", function (e) {
-  e.preventDefault();
-
-  const formData = new FormData(this);
-  const denuncia = {
-    anonimo: formData.get("anonimo"),
-    nombre: formData.get("nombre") || null,
-    correo: formData.get("correo") || null,
-    descripcion: formData.get("descripcion"),
-    fechaIncidente: formData.get("fechaIncidente") || null,
-    personaImplicada: formData.get("personaImplicada") || null,
-    fechaEnvio: new Date().toISOString(),
-    folio: generarFolio(),
-    estatus: "Recibida",
-    historial: [
-      {
-        fecha: new Date().toISOString(),
-        estatus: "Recibida",
-        nota: "Denuncia registrada automáticamente"
-      }
-    ]
-  };
-
-  guardarDenuncia(denuncia);
-
-  document.getElementById("formDenuncia").style.display = "none";
-  document.getElementById("confirmacion").style.display = "block";
-  document.getElementById("folioGenerado").textContent = denuncia.folio;
-});
-
-function generarFolio() {
-  const now = new Date();
-  return `DN-${now.getFullYear()}${now.getMonth()+1}${now.getDate()}-${now.getTime()}`;
-}
-
-function guardarDenuncia(denuncia) {
-  const existentes = JSON.parse(localStorage.getItem("denuncias") || "[]");
-  existentes.push(denuncia);
-  localStorage.setItem("denuncias", JSON.stringify(existentes));
-}
