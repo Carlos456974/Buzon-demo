@@ -2,21 +2,123 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Panel de Denuncias</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Panel de Administración - Buzón</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 1rem;
+      background: #fff;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 2rem;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 0.5rem;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background-color: #0077cc;
+      color: white;
+    }
+    select {
+      padding: 0.3rem;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #d9534f;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      float: right;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Panel de Seguimiento de Denuncias</h1>
-    <p>Solo personal autorizado debe acceder a esta información.</p>
-    
-    <button onclick="logout()" style="float: right; background-color: #dc3545;">Cerrar sesión</button>
-    <div style="clear: both;"></div>
+  <h1>Panel de Administración - Buzón de Denuncias</h1>
+  <button id="logoutBtn">Cerrar sesión</button>
+  <table>
+    <thead>
+      <tr>
+        <th>Folio</th>
+        <th>Fecha</th>
+        <th>Descripción</th>
+        <th>Correo</th>
+        <th>Anonima</th>
+        <th>Estatus</th>
+      </tr>
+    </thead>
+    <tbody id="denunciasTableBody">
+      <!-- Aquí van las denuncias -->
+    </tbody>
+  </table>
 
-    <div id="listaDenuncias"></div>
-  </div>
+  <script>
+    // Verificar login
+    if(localStorage.getItem("adminLogueado") !== "true"){
+      window.location.href = "login.html";
+    }
 
-  <script src="admin.js"></script>
+    const tbody = document.getElementById("denunciasTableBody");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    function cargarDenuncias() {
+      const denuncias = JSON.parse(localStorage.getItem("denuncias") || "[]");
+
+      tbody.innerHTML = "";
+
+      denuncias.forEach((denuncia, index) => {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+          <td>${denuncia.folio}</td>
+          <td>${denuncia.fecha}</td>
+          <td>${denuncia.descripcion}</td>
+          <td>${denuncia.anonima ? "Anónima" : (denuncia.correo || "-")}</td>
+          <td>${denuncia.anonima ? "Sí" : "No"}</td>
+          <td>
+            <select data-index="${index}">
+              <option value="Pendiente" ${denuncia.status === "Pendiente" ? "selected" : ""}>Pendiente</option>
+              <option value="Revisando" ${denuncia.status === "Revisando" ? "selected" : ""}>Revisando</option>
+              <option value="Revisado" ${denuncia.status === "Revisado" ? "selected" : ""}>Revisado</option>
+            </select>
+          </td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+
+      // Agregar eventos a selects para cambiar status
+      tbody.querySelectorAll("select").forEach(select => {
+        select.addEventListener("change", (e) => {
+          const index = e.target.dataset.index;
+          const denuncias = JSON.parse(localStorage.getItem("denuncias") || "[]");
+          denuncias[index].status = e.target.value;
+          localStorage.setItem("denuncias", JSON.stringify(denuncias));
+          alert(`Estatus actualizado a "${e.target.value}" para folio ${denuncias[index].folio}`);
+        });
+      });
+    }
+
+    cargarDenuncias();
+
+    logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem("adminLogueado");
+      window.location.href = "login.html";
+    });
+  </script>
 </body>
 </html>
