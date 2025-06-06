@@ -9,39 +9,42 @@
 <body>
   <div class="container">
     <h1>Buzón de Denuncias</h1>
-    <p>Tu denuncia será tratada con confidencialidad. Puedes hacerlo de forma anónima si lo deseas.</p>
+    <p>Este formulario permite reportar conductas de forma anónima o identificada.</p>
 
-    <form id="formDenuncia">
-      <label>¿Deseas permanecer en el anonimato?</label>
-      <select id="anonimo" name="anonimo">
-        <option value="si">Sí (anónimo)</option>
-        <option value="no">No (quiero dejar mis datos)</option>
+    <form id="denunciaForm">
+      <label>¿Deseas hacer la denuncia de forma anónima?</label>
+      <select name="anonimo" required>
+        <option value="si">Sí</option>
+        <option value="no">No</option>
       </select>
 
-      <div id="datosPersonales" style="display: none;">
-        <label>Tu nombre:</label>
+      <div id="datosPersona">
+        <label>Nombre completo</label>
         <input type="text" name="nombre" />
 
-        <label>Tu correo electrónico:</label>
+        <label>Correo electrónico</label>
         <input type="email" name="correo" />
       </div>
 
-      <label>Descripción de la denuncia *</label>
+      <label>¿Qué ocurrió?</label>
       <textarea name="descripcion" required></textarea>
 
-      <label>Fecha del incidente:</label>
+      <label>¿Cuándo ocurrió? (opcional)</label>
       <input type="date" name="fechaIncidente" />
 
-      <label>Área o persona implicada:</label>
+      <label>¿Quién estuvo implicado? (opcional)</label>
       <input type="text" name="personaImplicada" />
 
       <button type="submit">Enviar denuncia</button>
     </form>
 
-    <div id="confirmacion" style="display:none;">
-      <h2>¡Gracias por tu denuncia!</h2>
-      <p>Tu folio es: <strong id="folioGenerado"></strong></p>
-    </div>
+    <p id="mensaje" style="display: none;"></p>
+  </div>
+
+  <div style="text-align: center; margin-top: 30px;">
+    <a href="login.html" style="font-size: 12px; color: #888; text-decoration: none;">
+      Acceso administrador
+    </a>
   </div>
 
   <script src="script.js"></script>
