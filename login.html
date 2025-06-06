@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Administrador</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Acceso Administrador</h1>
+    <form id="loginForm">
+      <label>Usuario</label>
+      <input type="text" name="usuario" required>
+
+      <label>Contraseña</label>
+      <input type="password" name="password" required>
+
+      <button type="submit">Ingresar</button>
+    </form>
+    <p id="error" style="color: red; display: none;">Usuario o contraseña incorrectos.</p>
+  </div>
+
+  <script>
+    const form = document.getElementById("loginForm");
+    const errorMsg = document.getElementById("error");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const user = form.usuario.value.trim();
+      const pass = form.password.value;
+
+      const validUser = "admin";
+      const hashedPassword = "0b3d9fc4010e599d339b3ddc2149a7c3f68a0a7e2481080d8322d9a4df3d8c9e"; // hash SHA-256 de "admin123"
+
+      const hashBuffer = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(pass));
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+      if (user === validUser && hashHex === hashedPassword) {
+        localStorage.setItem("adminLogueado", "true");
+        window.location.href = "admin.html";
+      } else {
+        errorMsg.style.display = "block";
+      }
+    });
+  </script>
+</body>
+</html>
+
