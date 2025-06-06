@@ -67,40 +67,4 @@
       <input id="password" name="password" type="password" required />
       
       <label class="show-pass">
-        <input type="checkbox" id="togglePass" /> Mostrar contraseña
-      </label>
-      
-      <button type="submit">Ingresar</button>
-    </form>
-    <p id="error">Usuario o contraseña incorrectos.</p>
-  </div>
-
-  <script>
-    const form = document.getElementById("loginForm");
-    const errorMsg = document.getElementById("error");
-    const passwordInput = document.getElementById("password");
-    const togglePass = document.getElementById("togglePass");
-
-    togglePass.addEventListener("change", () => {
-      passwordInput.type = togglePass.checked ? "text" : "password";
-    });
-
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const user = form.usuario.value.trim();
-      const pass = form.password.value;
-
-      const validUser = "admin";
-      const validPass = "admin123"; // Contraseña en texto plano
-
-      if (user === validUser && pass === validPass) {
-        localStorage.setItem("adminLogueado", "true");
-        window.location.href = "admin.html";
-      } else {
-        errorMsg.style.display = "block";
-      }
-    });
-  </script>
-</body>
-</html>
+        <input type="
