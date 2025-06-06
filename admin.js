@@ -1,3 +1,15 @@
+// Protección de acceso
+if (localStorage.getItem("adminLogueado") !== "true") {
+  alert("Acceso restringido. Debes iniciar sesión.");
+  window.location.href = "login.html";
+}
+
+// Logout
+function logout() {
+  localStorage.removeItem("adminLogueado");
+  window.location.href = "login.html";
+}
+
 const lista = document.getElementById("listaDenuncias");
 const denuncias = JSON.parse(localStorage.getItem("denuncias") || "[]");
 
@@ -60,3 +72,4 @@ if (denuncias.length === 0) {
     });
   });
 }
+
